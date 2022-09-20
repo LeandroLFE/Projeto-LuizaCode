@@ -79,7 +79,7 @@ async def criar_usuário(usuario: Usuario)->str:
         return OK, 'O usuário foi cadastrado no nosso banco de dados!'
     return FALHA
      
-     
+
 @app.get("/usuario/{id_usuario}/")
 async def retornar_usuario(id_usuario: int):
     '''
@@ -125,14 +125,12 @@ async def retornar_enderecos_do_usuario(id_usuario: int)->str:
         return db_usuarios[id_usuario].enderecos
            
 @app.get("/emails/{dominio_requisitado}/")
-async def retornar_emails_dominio(id_usuario: int, dominio_requisitado: str)->str:
+async def retornar_emails_dominio(dominio_requisitado: str)->str:
     '''
     GET enderecos por dominio requisitado    
     '''
-    if id_usuario not in db_usuarios:
-        return FALHA
     lista_dominios = []
-    for id_usuario, dados_usuario in db_usuarios:
+    for id_usuario, dados_usuario in db_usuarios.items():
         dominio = dados_usuario.email.split('@')[1]
         if dominio == dominio_requisitado:
             lista_dominios.append(dados_usuario.email)
