@@ -31,7 +31,7 @@ class Produto(BaseModel):
 
 class Produto_Carrinho(BaseModel):
     produto: Produto
-    quantidade: int = 0
+    quantidade: int = 1
     sub_total: float = 0
 
 
@@ -39,7 +39,7 @@ class Produto_Carrinho(BaseModel):
 class Carrinho_De_Compras(BaseModel):
     produtos: List[Produto_Carrinho] = []
     preco_total: float = 0
-    quantidade_de_produtos: int = 0
+    quantidade_de_itens: int = 0
 
 
 # Classe representando os dados do cliente
@@ -137,12 +137,17 @@ async def get_produtos_id(id_produto: int):
     return FALHA, "produto não encontrado"
 
 
-@app.post("/produto/")
-async def criar_produto(produto: Produto):
-    if produto.id not in db_produtos:
-        db_produtos[produto.id] = produto
-        return OK, 'O produto foi cadastrado no nosso banco de dados!'
-    return FALHA
+@app.post("/produtos/")
+async def criar_produtos(produtos: List[Produto])->List[Produto]:
+    print('Estes são os produtos')
+    print(produtos)
+    list_adicionados = []
+    for produto in produtos:
+        if produto.id not in db_produtos:
+            db_produtos[produto.id] = produto
+            list_adicionados.append(produto)
+
+    return list_adicionados
 
 @app.put("/produto/{id_produto}")
 async def atualizar_produto(id_produto: int, produto_atualizado: Produto)->str:
@@ -157,7 +162,11 @@ async def deletar_produto(id_produto: int)->str:
         del db_produtos[id_produto]
         return OK, 'produto deletado'
     return FALHA
-            
+
+
+async def atualiza_preco_total(id_usuario: int):
+    db_usuarios[id_usuario].carrinho_compras.preco_total = sum([p.sub_total for p in db_usuarios[id_usuario].carrinho_compras.produtos])
+
 @app.put("/carrinho/{id_usuario}/")
 async def adicionar_produto_carrinho(id_usuario: int, produto: Produto)->str:
     if id_usuario not in db_usuarios:
@@ -168,12 +177,13 @@ async def adicionar_produto_carrinho(id_usuario: int, produto: Produto)->str:
         if produto_carrinho.produto.id == produto.id:
             produto_carrinho.quantidade += 1
             produto_carrinho.sub_total = produto_carrinho.produto.preco * produto_carrinho.quantidade
-            db_usuarios[id_usuario].carrinho_compras.preco_total = sum([p.sub_total for p in produto_carrinho])
+            await atualiza_preco_total(id_usuario)
             return OK, "atualizada quantidade"
-    db_usuarios[id_usuario].carrinho_compras.produtos.append(produto)
-    db_usuarios[id_usuario].carrinho_compras.quantidade_de_produtos = 1
-    db_usuarios[id_usuario].carrinho_compras.preco_total = sum([p.sub_total for p in db_usuarios[id_usuario].carrinho_compras.produtos])
-    return OK
+    produto_carrinho = Produto_Carrinho(produto=produto, quantidade=1, sub_total=produto.preco)
+    db_usuarios[id_usuario].carrinho_compras.produtos.append(produto_carrinho)
+    db_usuarios[id_usuario].carrinho_compras.quantidade_de_itens += 1
+    await atualiza_preco_total(id_usuario)
+    return OK, "adicionado o produto ao carrinho"
 
 @app.delete("/carrinho/{id_usuario}/{id_produto}/")
 async def remover_produto_carrinho(id_usuario: int, id_produto: int)->str:
@@ -184,16 +194,17 @@ async def remover_produto_carrinho(id_usuario: int, id_produto: int)->str:
     a_remover = None
     for produto_carrinho in db_usuarios[id_usuario].carrinho_compras.produtos:
         if produto_carrinho.produto.id == id_produto:
-            produto_carrinho.quantidade_de_produtos -= 1  
+            produto_carrinho.quantidade -= 1
             produto_carrinho.sub_total = produto_carrinho.produto.preco * produto_carrinho.quantidade
-            db_usuarios[id_usuario].carrinho_compras.preco_total = sum([p.sub_total for p in produto_carrinho])
-            if produto_carrinho.quantidade_de_produtos <=0:
-                produto_carrinho.quantidade_de_produtos = 0
+            await atualiza_preco_total(id_usuario)
+            if produto_carrinho.quantidade <=0:
+                produto_carrinho.quantidade = 0
                 a_remover = produto_carrinho
                 break
             return OK, "atualizada quantidade"
     if a_remover is not None:
-        del db_usuarios[id_usuario].carrinho_compras.produtos[a_remover]
+        db_usuarios[id_usuario].carrinho_compras.produtos.remove(a_remover)
+        db_usuarios[id_usuario].carrinho_compras.quantidade_de_itens -= 1
         return OK, "removido o produto"
     return FALHA
 
@@ -202,6 +213,8 @@ async def remover_produto_carrinho(id_usuario: int, id_produto: int)->str:
 async def retornar_carrinho(id_usuario: int):
     if id_usuario not in db_usuarios:
         return FALHA
+    if db_usuarios[id_usuario].carrinho_compras.produtos == []:
+        return []
     return db_usuarios[id_usuario].carrinho_compras
 
 

@@ -65,19 +65,27 @@ GET http://127.0.0.1:8000/produtos/ HTTP/1.1
 content-type: application/json
 
 ### Pegar 1 produto
-GET http://127.0.0.1:8000/produtos/9 HTTP/1.1
+GET http://127.0.0.1:8000/produtos/10 HTTP/1.1
 content-type: application/json
 
-### Criar produto
-POST http://127.0.0.1:8000/produto/ HTTP/1.1
+### Criar produtos
+POST http://127.0.0.1:8000/produtos/ HTTP/1.1
 content-type: application/json
 
-{
-    "id": 10,
-    "nome": "",
-    "descricao": "Doce gelado",
-    "preco": 9.99
-}
+[
+    {
+        "id": 10,
+        "nome": "Sorvete",
+        "descricao": "Doce gelado",
+        "preco": 9.99
+    },
+    {
+        "id": 20,
+        "nome": "Bolacha",
+        "descricao": "Biscoito doce",
+        "preco": 4.99
+    }
+]
 
 #######################################
 ############  Carrinho  ################
@@ -85,12 +93,33 @@ content-type: application/json
 
 ### Adiciona produto no carrinho do usuário
 
-PUT http://127.0.0.1:8000/produto/ HTTP/1.1
+PUT http://127.0.0.1:8000/carrinho/80/ HTTP/1.1
 content-type: application/json
 
 {
     "id": 10,
-    "nome": "",
+    "nome": "Sorvete",
     "descricao": "Doce gelado",
     "preco": 9.99
 }
+
+### Adiciona outro produto ao carrinho
+PUT http://127.0.0.1:8000/carrinho/80/ HTTP/1.1
+content-type: application/json
+
+{
+    "id": 20,
+    "nome": "Bolacha",
+    "descricao": "Biscoito doce",
+    "preco": 4.99
+}
+
+
+### Pega Carrinho do usuário
+
+GET http://127.0.0.1:8000/carrinho/80/ HTTP/1.1
+content-type: application/json
+
+### Retira produto do Carrinho
+DELETE http://127.0.0.1:8000/carrinho/80/10 HTTP/1.1
+content-type: application/json
