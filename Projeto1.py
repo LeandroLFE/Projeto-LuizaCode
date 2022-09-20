@@ -5,11 +5,13 @@ from pydantic import BaseModel
 app = FastAPI()
         
 OK = "OK"
-FALHA = "FALHA"     
+FALHA = "FALHA"    
 
 
-# Classe representando os dados do endereço do cliente
 class Endereco(BaseModel):
+    '''
+    Classe representando os dados do endereço do cliente
+    '''
     rua: str
     cep: str
     cidade: str
@@ -19,8 +21,10 @@ class Endereco(BaseModel):
         return f"{self.rua} - {self.cep} - {self.cidade} - {self.estado}"
 
 
-# Classe representando os dados do produto
 class Produto(BaseModel):
+    '''
+    Classe representando os dados do produto
+    '''
     id: int
     nome: str
     descricao: str
@@ -30,85 +34,116 @@ class Produto(BaseModel):
         return f"{self.id} - {self.nome} - {self.descricao} - {self.preco}"
 
 class Produto_Carrinho(BaseModel):
+    '''
+    Classe representando os dados de um Produto dentro do Carrinho
+    '''
     produto: Produto
     quantidade: int = 1
     sub_total: float = 0
 
 
-# Classe representando o carrinho de compras de um cliente com uma lista de produtos
 class Carrinho_De_Compras(BaseModel):
+    '''
+    Classe representando o carrinho de compras de um cliente com uma lista de produtos    
+    '''
     produtos: List[Produto_Carrinho] = []
     preco_total: float = 0
     quantidade_de_itens: int = 0
 
 
-# Classe representando os dados do cliente
 class Usuario(BaseModel):
+    '''
+    Classe representando os dados do cliente
+    '''
     id: int
     nome: str
     email: str
     senha: str
     enderecos: List[Endereco] = []
     carrinho_compras: Carrinho_De_Compras = {}
-      
+
+# Inicialização dos bancos de dados     
 db_usuarios = {}
 db_produtos = {}
-db_carrinhos = {}
 
 
 @app.post("/usuario/")
 async def criar_usuário(usuario: Usuario)->str:
+    '''
+    POST novo usuario
+    '''
     if usuario.id not in db_usuarios:
         db_usuarios[usuario.id] = usuario
         carrinho_compras = Carrinho_De_Compras(id_usuario=usuario.id)
         db_usuarios[usuario.id].carrinho_compras = carrinho_compras
         return OK, 'O usuário foi cadastrado no nosso banco de dados!'
     return FALHA
-            
-         
+     
+     
 @app.get("/usuario/{id_usuario}/")
 async def retornar_usuario(id_usuario: int):
+    '''
+    GET dados de um usuário por Id 
+    '''
     if id_usuario in db_usuarios:
         return db_usuarios[id_usuario]
     return FALHA
-     
+
 
 @app.get("/usuario/nome/{nome}/")
 async def retornar_usuario_com_nome(nome):
+    '''
+    GET dados de um usuário por nome
+    '''
     primeiro_nome = nome.split()[0]
     lista_usuarios = []
     for id_usuario, dados_usuario in db_usuarios.items():
         if primeiro_nome in dados_usuario.nome:
             lista_usuarios.append(dados_usuario)
     return lista_usuarios
-                    
+
+
 @app.delete("/usuario/{id_usuario}/")
 async def deletar_usuario(id_usuario: int)->str:
+    '''
+    DELETE um usuário por id
+    '''
     if id_usuario in db_usuarios:
         del db_usuarios[id_usuario]
         return "o usuário foi deletado do nosso banco de dados com sucesso"
     return FALHA
             
+
 @app.get("/usuario/{id_usuario}/enderecos/")
 async def retornar_enderecos_do_usuario(id_usuario: int)->str:
+    '''
+    GET os endereços de um usuário
+    '''
     if id_usuario not in db_usuarios:
         return FALHA
     else:
         return db_usuarios[id_usuario].enderecos
-          
-@app.get("/usuario/{id_usuario}/emails/{dominio_requisitado}/")
+           
+@app.get("/emails/{dominio_requisitado}/")
 async def retornar_emails_dominio(id_usuario: int, dominio_requisitado: str)->str:
+    '''
+    GET enderecos por dominio requisitado    
+    '''
     if id_usuario not in db_usuarios:
         return FALHA
     lista_dominios = []
-    dominio = db_usuarios[id_usuario].email.split('@')[1]
-    if dominio == dominio_requisitado:
-        lista_dominios.append(db_usuarios[id_usuario].email)
+    for id_usuario, dados_usuario in db_usuarios:
+        dominio = dados_usuario.email.split('@')[1]
+        if dominio == dominio_requisitado:
+            lista_dominios.append(dados_usuario.email)
     return lista_dominios
 
-
+ 
 @app.post("/{id_usuario}/endereco/")
 async def criar_endereco(id_usuario: int, novo_endereco: Endereco):
+    '''
+    POST novo endereços a um usuário
+    '''
     if id_usuario not in db_usuarios:
         return FALHA
     for endereco in db_usuarios[id_usuario].enderecos:
@@ -116,9 +151,13 @@ async def criar_endereco(id_usuario: int, novo_endereco: Endereco):
             return FALHA
     db_usuarios[id_usuario].enderecos.append(novo_endereco)
     return OK
-        
+
+
 @app.delete("/{id_usuario}/endereco/")
 async def deletar_endereco(id_usuario: int, endereco_a_deletar: Endereco):
+    '''
+    DELETE um endereco de um usuário
+    '''
     if id_usuario not in db_usuarios:
         return FALHA
     if endereco_a_deletar not in db_usuarios[id_usuario].enderecos:
@@ -128,10 +167,17 @@ async def deletar_endereco(id_usuario: int, endereco_a_deletar: Endereco):
 
 @app.get("/produtos/")
 async def get_produtos():
+    '''
+    GET DB_Produtos
+    '''
     return db_produtos
+
 
 @app.get("/produtos/{id_produto}/")
 async def get_produtos_id(id_produto: int):
+    '''
+    GET um produto por Id
+    '''
     if id_produto in db_produtos:
         return db_produtos[id_produto]
     return FALHA, "produto não encontrado"
@@ -139,18 +185,21 @@ async def get_produtos_id(id_produto: int):
 
 @app.post("/produtos/")
 async def criar_produtos(produtos: List[Produto])->List[Produto]:
-    print('Estes são os produtos')
-    print(produtos)
+    '''
+    POST adiciona lista de produtos
+    '''
     list_adicionados = []
     for produto in produtos:
         if produto.id not in db_produtos:
             db_produtos[produto.id] = produto
             list_adicionados.append(produto)
-
     return list_adicionados
 
 @app.put("/produto/{id_produto}")
 async def atualizar_produto(id_produto: int, produto_atualizado: Produto)->str:
+    '''
+    PUT atualiza um produto por Id
+    '''
     if id_produto not in db_produtos:
         db_produtos[id_produto] = produto_atualizado
         return OK, 'O produto foi cadastrado no nosso banco de dados!'
@@ -158,13 +207,18 @@ async def atualizar_produto(id_produto: int, produto_atualizado: Produto)->str:
 
 @app.delete("/produto/{id_produto}/")
 async def deletar_produto(id_produto: int)->str:
+    '''
+    DELETE um produto por Id    
+    '''
     if id_produto in db_produtos:
         del db_produtos[id_produto]
         return OK, 'produto deletado'
     return FALHA
 
-
-async def atualiza_preco_total(id_usuario: int):
+async def atualiza_preco_total(id_usuario: int)->None:
+    '''
+    Método auxiliar para atualizar o preço total do carrinho
+    '''
     db_usuarios[id_usuario].carrinho_compras.preco_total = sum([p.sub_total for p in db_usuarios[id_usuario].carrinho_compras.produtos])
 
 @app.put("/carrinho/{id_usuario}/")
@@ -223,7 +277,7 @@ async def deletar_carrinho(id_usuario: int):
     if id_usuario not in db_usuarios:
         return FALHA
     else:
-        del db_carrinhos[id_usuario]
+        # del db_carrinhos[id_usuario]
         return OK
         
         
