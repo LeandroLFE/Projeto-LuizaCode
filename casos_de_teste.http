@@ -4,7 +4,7 @@
 
 
 # Criar usuário
-POST http://127.0.0.1:8000/usuario HTTP/1.1
+POST http://127.0.0.1:8000/usuario/ HTTP/1.1
 content-type: application/json
 
 {
@@ -16,12 +16,12 @@ content-type: application/json
 
 #######################################
 # Pegar usuário pelo id
-GET http://127.0.0.1:8000/usuario?id=80 HTTP/1.1
+GET http://127.0.0.1:8000/usuario/80/ HTTP/1.1
 content-type: application/json
 
 ####### Usuario pelo nome #############
 
-GET http://127.0.0.1:8000/usuario/nome?nome=bianca
+GET http://127.0.0.1:8000/usuario/nome/bruna/
 content-type: application/json
 
 
@@ -30,7 +30,7 @@ content-type: application/json
 #######################################
 
 # Criar endereço
-POST http://127.0.0.1:8000/endereco/2 HTTP/1.1
+POST http://127.0.0.1:8000/80/endereco/ HTTP/1.1
 content-type: application/json
 
 {
@@ -40,21 +40,57 @@ content-type: application/json
     "estado": "GO"
 }
 
+#######################################
+
+# Pegar endereço por id
+GET http://127.0.0.1:8000/usuario/80/enderecos/
+content-type: application/json
+
 ########################################
-DELETE http://127.0.0.1:8000/usuario/?id=2 HTTP/1.1
+# Pegar endereço por dominio
+GET http://127.0.0.1:8000/usuario/80/emails/gmail.com/ HTTP/1.1
+content-type: application/json
+
+########################################
+DELETE http://127.0.0.1:8000/usuario/80/ HTTP/1.1
 content-type: application/json
 
 #######################################
 ############  produto  ################
 #######################################
 
-# Criar produto
-POST http://127.0.0.1:8000/produto HTTP/1.1
+### Pegar produtos
+
+GET http://127.0.0.1:8000/produtos/ HTTP/1.1
+content-type: application/json
+
+### Pegar 1 produto
+GET http://127.0.0.1:8000/produtos/9 HTTP/1.1
+content-type: application/json
+
+### Criar produto
+POST http://127.0.0.1:8000/produto/ HTTP/1.1
 content-type: application/json
 
 {
-    "id": 9,
-    "nome": "Sorvete",
+    "id": 10,
+    "nome": "",
+    "descricao": "Doce gelado",
+    "preco": 9.99
+}
+
+#######################################
+############  Carrinho  ################
+#######################################
+
+### Adiciona produto no carrinho do usuário
+
+PUT http://127.0.0.1:8000/produto/ HTTP/1.1
+content-type: application/json
+
+{
+    "id": 10,
+    "nome": "",
     "descricao": "Doce gelado",
     "preco": 9.99
 }
