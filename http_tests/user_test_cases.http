@@ -1,0 +1,52 @@
+###############################################
+############  User  ###########################
+###############################################
+
+####### INSERT a new user ############
+POST http://127.0.0.1:8000/user/ HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Ana Júlia",
+    "email": "teste11@gmail.com",
+    "pwd": "4321"
+}
+
+######## GET all users #########################
+GET http://127.0.0.1:8000/user/ HTTP/1.1
+content-type: application/json
+
+
+######### GET users with page ##################
+GET http://127.0.0.1:8000/user/?page=1 HTTP/1.1
+content-type: application/json
+
+
+########### GET User by Id ###########################################
+GET http://127.0.0.1:8000/user/6ede636d-c805-4576-8462-309a286a8d12/ HTTP/1.1
+content-type: application/json
+
+
+########### UPDATE User by Id ###########################################
+PUT http://127.0.0.1:8000/user/6ede636d-c805-4576-8462-309a286a8d12/ HTTP/1.1
+content-type: application/json
+
+{
+    "email": "teste@gmail.com"
+}
+
+
+####### Users by name ###################################
+
+GET http://127.0.0.1:8000/user/name/Ana Júlia
+content-type: application/json
+
+
+######## Get emails by a domain #############################
+GET http://127.0.0.1:8000/user/emails/?domain_name=@gmail.com HTTP/1.1
+content-type: application/json
+
+
+########## Delete an user by Id #######################################
+DELETE http://127.0.0.1:8000/user/6ede636d-c805-4576-8462-309a286a8d12/ HTTP/1.1
+content-type: application/json

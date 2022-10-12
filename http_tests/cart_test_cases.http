@@ -1,0 +1,85 @@
+########################################################
+############  Cart  ####################################
+########################################################
+
+
+### Create User´s cart if not exists ###################
+POST http://127.0.0.1:8000/cart/4bfedccd-ee8f-41a5-9e63-16ca21bdd8ea/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "price": 0,
+    "paid": false,
+    "address": {
+        "street": "Rua Z",
+        "zipcode": "00000-000",
+        "district": "East Zone",
+        "city": "GG",
+        "state": "SS",
+        "is_delivery": true
+    },
+    "authority": ""
+}
+
+### GET actual User´s cart ##############################
+GET http://127.0.0.1:8000/cart/4bfedccd-ee8f-41a5-9e63-16ca21bdd8ea/ HTTP/1.1
+Content-Type: application/json
+
+
+### REMOVE the user cart ################################
+# TODO: REMOVE CART ITEMS
+DELETE http://127.0.0.1:8000/cart/4bfedccd-ee8f-41a5-9e63-16ca21bdd8ea/ HTTP/1.1
+content-type: application/json
+
+
+############################################################
+############  Cart Itens ###################################
+############################################################
+
+
+### Add product in the user cart ########################
+PUT http://127.0.0.1:8000/cart/6345ab51d10870df4dfc4649/item/ HTTP/1.1
+content-type: application/json
+
+{
+    "product":{
+        "id": 10,
+        "name": "Sorvete",
+        "description": "Doce gelado",
+        "price": 9.99
+    }
+}
+### Add another product in the user cart
+PUT http://127.0.0.1:8000/cart/6345ab51d10870df4dfc4649/item/ HTTP/1.1
+content-type: application/json
+
+{
+    "product": {
+        "id": 20,
+        "name": "Bolacha",
+        "description": "Biscoito doce",
+        "price": 4.99
+    },
+    "quantity": 3
+}
+
+### GET ALL cart items
+
+GET http://127.0.0.1:8000/cart/6345ab51d10870df4dfc4649/item HTTP/1.1
+content-type: application/json
+
+
+### GET a user cart item
+
+GET http://127.0.0.1:8000/cart/6345ab51d10870df4dfc4649/item/20 HTTP/1.1
+content-type: application/json
+
+
+### REMOVE a user cart-item
+DELETE http://127.0.0.1:8000/cart/6345ab51d10870df4dfc4649/item/10 HTTP/1.1
+content-type: application/json
+
+
+### REMOVE a user cart-item
+DELETE http://127.0.0.1:8000/cart/6345ab51d10870df4dfc4649/item/20?quantity=2 HTTP/1.1
+content-type: application/json

@@ -1,0 +1,33 @@
+#######################################
+############  product  ################
+#######################################
+
+### GET products
+
+GET http://127.0.0.1:8000/products/ HTTP/1.1
+content-type: application/json
+
+### GET 1 product
+GET http://127.0.0.1:8000/products/10 HTTP/1.1
+content-type: application/json
+
+### INSERT products
+POST http://127.0.0.1:8000/products/ HTTP/1.1
+content-type: application/json
+
+[
+    {
+        "name": "Sorvete",
+        "description": "Doce gelado",
+        "price": 9.99
+    },
+    {
+        "name": "Bolacha",
+        "description": "Biscoito doce",
+        "price": 4.99
+    }
+]
+
+### Delete a product #####
+DELETE http://127.0.0.1:8000/products/860037ad-010e-44f1-8568-796f576d4545/ HTTP/1.1
+content-type: application/json

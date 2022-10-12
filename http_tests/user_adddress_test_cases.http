@@ -1,0 +1,36 @@
+#####################################################################################
+############  Address  ##############################################################
+#####################################################################################
+
+
+######## Add a new Address ##########################################################
+PUT http://127.0.0.1:8000/user/19b5c74d-433c-4d30-8c47-9904e59ceb36/address/ HTTP/1.1
+content-type: application/json
+
+{
+    "street": "Rua Z",
+    "zipcode": "00000-000",
+    "district": "East Zone",
+    "city": "GG",
+    "state": "SS",
+    "is_delivery": true
+}
+
+
+######### GET address by User Id ##################################################
+GET http://127.0.0.1:8000/user/19b5c74d-433c-4d30-8c47-9904e59ceb36/address/
+content-type: application/json
+
+
+########## DELETE address by User Id ###############################################
+DELETE http://127.0.0.1:8000/user/19b5c74d-433c-4d30-8c47-9904e59ceb36/address/
+content-type: application/json
+
+{
+    "street": "Rua Z",
+    "zipcode": "00000-000",
+    "district": "East Zone",
+    "city": "GG",
+    "state": "SS",
+    "is_delivery": true
+}
