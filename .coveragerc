@@ -1,2 +1,2 @@
 [run]
-omit = tests/*, main.py, Projeto1.py
+omit = tests/*, main.py
