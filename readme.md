@@ -55,11 +55,11 @@ $ source venv/bin/activate (Linux)
 ```
 $ pip install -r requirements.txt
 ```
-### 6) Run
+### 7) Run
 ```
 $ uvicorn main:app
 ```
-### 7) Testing
+### 8) Testing
 ```
 Open http://127.0.0.1:8000/docs or use the http_tests folder with the VSCode extension "Rest Client" to send requisitions
 ```
