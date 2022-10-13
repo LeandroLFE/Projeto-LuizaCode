@@ -6,7 +6,6 @@ from controllers.product_routes import router as product_router
 from server.database_test import DataBaseTest
 from utils.generate_fakes import generate_fake_product, generate_fake_products
 
-
 app = FastAPI()
 app.include_router(product_router, tags=["product"], prefix="/products")
 

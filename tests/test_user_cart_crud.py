@@ -5,7 +5,7 @@ from pytest import mark
 from controllers.cart_routes import router as cart_router
 from controllers.user_routes import router as user_router
 from server.database_test import DataBaseTest
-from utils.generate_fakes import generate_fake_user, generate_fake_cart
+from utils.generate_fakes import generate_fake_cart, generate_fake_user
 
 app = FastAPI()
 app.include_router(cart_router, tags=["cart"], prefix="/cart")
