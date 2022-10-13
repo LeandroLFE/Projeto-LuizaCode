@@ -97,11 +97,21 @@ async def test_create_update_cart_item_with_more_quantity():
 async def test_create_update_cart_item_missing_fields():
     with TestClient(app) as client:
         body_client = await generate_fake_user(client)
+        fake_products = await generate_fake_products(client)
+        user_id = body_client.json().get("_id")
+        fake_cart = await generate_fake_cart(client, user_id)
+        quantity = 1
+        await generate_fake_cart_item(
+            client, fake_cart.json(), fake_products.json()[0], quantity
+        )
         response = client.put(
             f"/cart/{body_client.json().get('_id')}/item/",
             json={
-                "description": "Doce gelado de morango",
-                "price": 9.99,
+                "cart": fake_cart.json().get("_id"),
+                "product": {
+                    "description": "Doce gelado de morango",
+                    "price": 9.99,
+                }
             },
         )
         assert response.status_code == 422
