@@ -5,18 +5,16 @@ from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
 from pytest import mark
 
-from controllers.user_routes import router as user_router, Request, status
-from controllers.product_routes import router as product_router
 from controllers.cart_items_routes import router as cart_items_router
 from controllers.cart_routes import router as cart_router
+from controllers.product_routes import router as product_router
+from controllers.user_routes import Request
+from controllers.user_routes import router as user_router
+from controllers.user_routes import status
 from project_logs.logging import set_logging
 from server.database_test import DataBaseTest
-from utils.generate_fakes import (
-    generate_fake_cart_item,
-    generate_fake_products,
-    generate_fake_user,
-    generate_fake_cart,
-)
+from utils.generate_fakes import (generate_fake_cart, generate_fake_cart_item,
+                                  generate_fake_products, generate_fake_user)
 
 app = FastAPI()
 app.include_router(user_router, tags=["user"], prefix="/user")
@@ -111,7 +109,7 @@ async def test_create_update_cart_item_missing_fields():
                 "product": {
                     "description": "Doce gelado de morango",
                     "price": 9.99,
-                }
+                },
             },
         )
         assert response.status_code == 422
