@@ -48,6 +48,10 @@ $ python -m venv venv
 $ .\venv\Scripts\activate (Windows)
 $ source venv/bin/activate (Linux)
 ```
+### 6) Install dependences
+```
+$ pip install -r requirements.txt
+```
 ### 6) Run
 ```
 $ uvicorn main:app
