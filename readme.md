@@ -22,7 +22,7 @@
 ### pytest = Python library that extends unittest to do soffisticated testing.
 ### pytest-asyncio = library to work in Pytest asynchronous
 ### pytest-cov = library that add coverage report to pytest
-### pytest-env = library to work pass envinronment variables to pytest easily
+### pytest-env = library to work with envinronment variables in pytest easily
 
 # &nbsp;
 # -> Installation Step by Step
@@ -32,9 +32,12 @@
 ## In terminal:
 ### 1) Git clone this project 
 ```
-git clone https://github.com/LeandroLFE/Projeto-LuizaCode.git
+$ git clone https://github.com/LeandroLFE/Projeto-LuizaCode.git
 ```
-### 2) cd Projeto-LuizaCode
+### 2) Move to the Project folder
+```
+$ cd Projeto-LuizaCode
+```
 ### 3) Add .env file at the root folder with this content:
 ```
 DATABASE_URI = <your_mongodb_atlas_connection_string>
