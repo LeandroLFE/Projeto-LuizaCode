@@ -1,5 +1,5 @@
 #
-# <center>Welcome to this Cart Api</center>
+# <center>Welcome to this Cart Api&nbsp;[![Python package](https://github.com/LeandroLFE/Projeto-LuizaCode/actions/workflows/python-package.yml/badge.svg)](https://github.com/LeandroLFE/Projeto-LuizaCode/actions/workflows/python-package.yml)</center>
 
 ## This project is another implementation of the "Projeto-LuizaCode" from my friend [@anairotiv](https://github.com/anairotiv/Projeto-LuizaCode).  
 ## It consists of an API written in Python language that makes CRUD of a cart that contains User, Product, Cart and Cart-Items Schemas and uses FastAPI with MongoDB
