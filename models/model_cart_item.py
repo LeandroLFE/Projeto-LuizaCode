@@ -1,3 +1,5 @@
+from typing import Union
+
 from bson.objectid import ObjectId
 from fastapi import APIRouter, Body, HTTPException, status
 from fastapi.encoders import jsonable_encoder
@@ -99,7 +101,7 @@ async def create_update_cart_item(
             }
 
 
-async def get_all_cart_items(database, cart_id: str | ObjectId):
+async def get_all_cart_items(database, cart_id: Union[str, ObjectId]):
     try:
         if ObjectId.is_valid(cart_id):
             cart_item = database.cart_items_collection.find(
@@ -117,7 +119,7 @@ async def get_all_cart_items(database, cart_id: str | ObjectId):
         )
 
 
-async def get_cart_item_by_id(database, cart_item_id: str | ObjectId):
+async def get_cart_item_by_id(database, cart_item_id: Union[str, ObjectId]):
     if ObjectId.is_valid(cart_item_id):
         if (
             cart_item := await database.cart_items_collection.find_one(

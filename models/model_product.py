@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 
 from fastapi import APIRouter, Body, HTTPException, status
 from fastapi.encoders import jsonable_encoder
@@ -9,7 +9,7 @@ from schemas.product import Product, ProductUpdate
 router = APIRouter()
 
 
-async def create_products(database, products: List[Product] | Product = Body(...)):
+async def create_products(database, products: Union[List[Product], Product] = Body(...)):
     created_products = []
     new_products = products if isinstance(products, list) else [products]
     for product in new_products:

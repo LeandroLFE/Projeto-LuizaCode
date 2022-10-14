@@ -1,5 +1,5 @@
 from re import match
-from typing import List
+from typing import List, Optional, Union
 
 from fastapi import APIRouter, Body, HTTPException, status
 from fastapi.encoders import jsonable_encoder
@@ -36,7 +36,7 @@ async def create_user(database, user):
         }
 
 
-async def list_users(database, page: int | None = None) -> List[User] | ProjectErrors:
+async def list_users(database, page: Optional[int] = None) -> Union[List[User], ProjectErrors]:
     if page is None:
         try:
             users = database.users_collection.find()
@@ -66,7 +66,7 @@ async def list_users(database, page: int | None = None) -> List[User] | ProjectE
         }
 
 
-async def get_user_by_id(database, user_id: str) -> User | ProjectErrors:
+async def get_user_by_id(database, user_id: str) -> Union[User, ProjectErrors]:
     user = await database.users_collection.find_one({"_id": user_id})
     if user is not None:
         return user
@@ -79,7 +79,7 @@ async def get_user_by_id(database, user_id: str) -> User | ProjectErrors:
     )
 
 
-async def get_users_by_name(database, user_name: str) -> List[User] | ProjectErrors:
+async def get_users_by_name(database, user_name: str) -> Union[List[User], ProjectErrors]:
     try:
         user = database.users_collection.find({"name": user_name})
         user = await user.to_list(length=100)
@@ -152,7 +152,7 @@ async def delete_user(database, user_id: str):
         )
 
 
-async def get_emails_by_domain(database, domain: str) -> EmailsList | ProjectErrors:
+async def get_emails_by_domain(database, domain: str) -> Union[EmailsList, ProjectErrors]:
     try:
         if not match(r"^@[a-zA-Z]+\.[a-zA-Z]{1,3}$", domain):
             return {

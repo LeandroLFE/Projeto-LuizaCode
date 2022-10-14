@@ -1,3 +1,4 @@
+from typing import Optional, Union
 from uuid import uuid4
 
 from bson.objectid import ObjectId
@@ -11,7 +12,7 @@ class Product(BaseModel):
     Product data class
     """
 
-    id: str | PyObjectId = Field(default_factory=uuid4, alias="_id")
+    id: Union[str, PyObjectId] = Field(default_factory=uuid4, alias="_id")
     name: str = Field(...)
     description: str = Field(...)
     price: float = Field(...)
@@ -27,6 +28,6 @@ class ProductUpdate(BaseModel):
     Class for Product update
     """
 
-    name: str | None
-    description: str | None
-    price: float | None
+    name: Optional[str]
+    description: Optional[str]
+    price: Optional[float]

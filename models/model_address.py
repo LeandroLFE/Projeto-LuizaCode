@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 
 from fastapi import HTTPException, status
 from fastapi.encoders import jsonable_encoder
@@ -46,7 +46,7 @@ async def add_address(database, user_id: str, address: Address) -> ProjectErrors
         }
 
 
-async def list_address(database, user_id: str) -> List[Address] | ProjectErrors:
+async def list_address(database, user_id: str) -> Union[List[Address], ProjectErrors]:
     user = await get_user_by_id(database, user_id)
     try:
         User.validate(user)

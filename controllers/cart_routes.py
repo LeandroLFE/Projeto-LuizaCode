@@ -1,3 +1,5 @@
+from typing import Union
+
 from fastapi import APIRouter, Body, HTTPException, Request, status
 
 from models.model_cart import (create_cart, delete_cart, get_user_cart,
@@ -12,7 +14,7 @@ router = APIRouter()
     "/{user_id}",
     response_description="Create a new Cart if there is no active",
     status_code=status.HTTP_201_CREATED,
-    response_model=Cart | ProjectErrors,
+    response_model=Union[Cart, ProjectErrors],
 )
 async def route_create_cart(
     user_id: str, request: Request, cart: CartInsert = Body(...)
@@ -23,7 +25,7 @@ async def route_create_cart(
 @router.get(
     "/{user_id}",
     response_description="Return an active User cart",
-    response_model=Cart | ProjectErrors,
+    response_model=Union[Cart, ProjectErrors],
 )
 async def route_get_user_cart(user_id: str, request: Request):
     if (get_cart := await get_user_cart(request.app.database, user_id)) is not None:
@@ -41,7 +43,7 @@ async def route_get_user_cart(user_id: str, request: Request):
 @router.put(
     "/{user_id}",
     response_description="Update a cart",
-    response_model=Cart | ProjectErrors,
+    response_model=Union[Cart, ProjectErrors],
 )
 async def route_update_cart(
     user_id: str, request: Request, cart: CartUpdate = Body(...)

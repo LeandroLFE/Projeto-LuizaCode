@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional, Union
 from uuid import uuid4
 
 from bson.objectid import ObjectId
@@ -15,7 +15,7 @@ class User(BaseModel):
     Class for Users
     """
 
-    id: str | PyObjectId = Field(default_factory=uuid4, alias="_id")
+    id: Union[str, PyObjectId] = Field(default_factory=uuid4, alias="_id")
     name: str = Field(...)
     email: str = Field(regex=email_pattern)
     pwd: SecretStr = Field(...)
@@ -32,9 +32,9 @@ class UserUpdate(BaseModel):
     Class for update an User
     """
 
-    name: str | None
-    email: str | None
-    pwd: str | None
+    name: Optional[str]
+    email: Optional[str]
+    pwd: Optional[str]
 
 
 class EmailsList(BaseModel):

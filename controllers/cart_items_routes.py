@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 
 from fastapi import APIRouter, Body, HTTPException, Request, status
 
@@ -14,7 +14,7 @@ router = APIRouter()
     "/",
     response_description="Create a new Cart item",
     status_code=status.HTTP_201_CREATED,
-    response_model=CartItem | ProjectErrors,
+    response_model=Union[CartItem, ProjectErrors],
 )
 async def route_create_update_cart_item(
     cart_id: str, request: Request, cart_item: CartItemUpdate = Body(...)
@@ -25,7 +25,7 @@ async def route_create_update_cart_item(
 @router.get(
     "/",
     response_description="Return all cart_items from a cart",
-    response_model=List[CartItem] | ProjectErrors,
+    response_model=Union[List[CartItem], ProjectErrors],
 )
 async def route_get_all_cart_items(cart_id: str, request: Request):
     return await get_all_cart_items(request.app.database, cart_id)
@@ -34,7 +34,7 @@ async def route_get_all_cart_items(cart_id: str, request: Request):
 @router.get(
     "/{product_id}",
     response_description="Return an active User cart_item",
-    response_model=CartItem | ProjectErrors,
+    response_model=Union[CartItem, ProjectErrors],
 )
 async def route_get_a_cart_item(cart_id: str, product_id: str, request: Request):
     if (
@@ -54,7 +54,7 @@ async def route_get_a_cart_item(cart_id: str, product_id: str, request: Request)
 @router.delete(
     "/{product_id}",
     response_description="Delete a cart item",
-    response_model=CartItem | ProjectErrors,
+    response_model=Union[CartItem, ProjectErrors],
 )
 async def route_delete_cart_item(
     cart_id: str, product_id: str, request: Request, quantity: int = 1

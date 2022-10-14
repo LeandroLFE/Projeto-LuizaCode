@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 
 from fastapi import APIRouter, Body, Request, status
 
@@ -15,10 +15,10 @@ router = APIRouter()
     "/",
     response_description="Create new Products",
     status_code=status.HTTP_201_CREATED,
-    response_model=List[Product] | Product,
+    response_model=Union[List[Product], Product],
 )
 async def route_create_products(
-    request: Request, products: List[Product] | Product = Body(...)
+    request: Request, products: Union[List[Product], Product] = Body(...)
 ):
     return await create_products(request.app.database, products)
 
@@ -40,7 +40,7 @@ async def route_list_product_by_id(product_id: str, request: Request):
 @router.put(
     "/{product_id}",
     response_description="Update a product",
-    response_model=Product | ProjectErrors,
+    response_model=Union[Product, ProjectErrors],
 )
 async def route_update_product(
     product_id: str, request: Request, product: ProductUpdate = Body(...)

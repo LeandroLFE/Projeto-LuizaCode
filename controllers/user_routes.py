@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional, Union
 
 from fastapi import APIRouter, Body, Request, status
 
@@ -15,7 +15,7 @@ router = APIRouter()
     "/",
     response_description="Create a new User",
     status_code=status.HTTP_201_CREATED,
-    response_model=User | ProjectErrors,
+    response_model=Union[User, ProjectErrors],
 )
 async def route_create_user(
     request: Request, status_code=status.HTTP_201_CREATED, user: User = Body(...)
@@ -24,16 +24,18 @@ async def route_create_user(
 
 
 @router.get(
-    "/", response_description="List users", response_model=List[User] | ProjectErrors
+    "/",
+    response_description="List users",
+    response_model=Union[List[User], ProjectErrors],
 )
-async def route_list_users(request: Request, page: int | None = None):
+async def route_list_users(request: Request, page: Optional[int] = None):
     return await list_users(request.app.database, page)
 
 
 @router.get(
     "/{user_id}",
     response_description="Return an User by Id",
-    response_model=User | ProjectErrors,
+    response_model=Union[User, ProjectErrors],
 )
 async def route_get_user_by_id(user_id: str, request: Request):
     return await get_user_by_id(request.app.database, user_id)
@@ -42,7 +44,7 @@ async def route_get_user_by_id(user_id: str, request: Request):
 @router.get(
     "/name/{user_name}",
     response_description="Return an User by name",
-    response_model=List[User] | ProjectErrors,
+    response_model=Union[List[User], ProjectErrors],
 )
 async def route_get_users_by_name(user_name: str, request: Request):
     return await get_users_by_name(request.app.database, user_name)
@@ -51,7 +53,7 @@ async def route_get_users_by_name(user_name: str, request: Request):
 @router.get(
     "/emails/",
     response_description="Return number of emails by domain name",
-    response_model=EmailsList | ProjectErrors,
+    response_model=Union[EmailsList, ProjectErrors],
 )
 async def route_get_emails_by_domain(domain_name: str, request: Request):
     return await get_emails_by_domain(request.app.database, domain_name)

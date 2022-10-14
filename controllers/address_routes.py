@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 
 from fastapi import APIRouter, Body, Request
 
@@ -21,7 +21,7 @@ async def route_add_address(
 @router.get(
     "/",
     response_description="List address",
-    response_model=List[Address] | ProjectErrors,
+    response_model=Union[List[Address], ProjectErrors],
 )
 async def route_list_address(
     user_id: str,
