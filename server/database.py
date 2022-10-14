@@ -1,16 +1,21 @@
 from os import getenv
 
+from dotenv import load_dotenv
 from motor.motor_asyncio import AsyncIOMotorClient
 
 
 class DataBase:
     client: AsyncIOMotorClient = None
-    database_uri = getenv("DATABASE_URI")
+    database_uri = None
     users_collection = None
     address_collection = None
     product_collection = None
     cart_collection = None
     cart_items_collection = None
+
+    def __init__(self) -> None:
+        load_dotenv()
+        self.database_uri = getenv("DATABASE_URI")
 
     async def connect_db(self):
         # conexao mongo, com no máximo 10 conexões async
