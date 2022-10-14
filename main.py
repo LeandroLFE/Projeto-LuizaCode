@@ -2,7 +2,6 @@ from fastapi import FastAPI, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from uvicorn import run as uvicorn_run
 
 from controllers.address_routes import router as address_router
 from controllers.cart_items_routes import router as cart_items_router
@@ -48,6 +47,3 @@ app.include_router(product_router, tags=["products"], prefix="/products")
 app.include_router(address_router, tags=["address"], prefix="/user/{user_id}/address")
 app.include_router(cart_router, tags=["cart"], prefix="/cart")
 app.include_router(cart_items_router, tags=["cart_item"], prefix="/cart/{cart_id}/item")
-
-if __name__ == "__main__":
-    uvicorn_run("server.api:app", host="0.0.0.0", port=8000, reload=True)
