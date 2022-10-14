@@ -83,11 +83,10 @@ async def get_a_cart_by_cart_id(database, cart_id: str):
 async def cascade_delete(database, id: str, mode="user"):
     if (cart := await get_a_cart_by_user_id(database, id)) is None:
         return None
-    match mode:
-        case "user":
-            await delete_all_cart_items(database, cart.get("_id"))
-            return await delete_a_cart(database, id)
-        case _:
-            cart = await get_a_cart_by_cart_id(database, id)
-            await delete_all_cart_items(database, cart.get("_id"))
-            return await delete_a_cart(database, cart.get("user").get("_id"))
+    if mode == "user":
+        await delete_all_cart_items(database, cart.get("_id"))
+        return await delete_a_cart(database, id)
+    else:
+        cart = await get_a_cart_by_cart_id(database, id)
+        await delete_all_cart_items(database, cart.get("_id"))
+        return await delete_a_cart(database, cart.get("user").get("_id"))
