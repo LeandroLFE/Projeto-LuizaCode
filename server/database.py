@@ -3,6 +3,8 @@ from os import getenv
 from dotenv import load_dotenv
 from motor.motor_asyncio import AsyncIOMotorClient
 
+from project_logs.logging import set_logging
+
 
 class DataBase:
     client: AsyncIOMotorClient = None
@@ -12,10 +14,13 @@ class DataBase:
     product_collection = None
     cart_collection = None
     cart_items_collection = None
+    logger = None
 
     def __init__(self) -> None:
         load_dotenv()
         self.database_uri = getenv("DATABASE_URI")
+        self.logger = set_logging("info")
+        self.logger.info("ENV loaded!")
 
     async def connect_db(self):
         # conexao mongo, com no máximo 10 conexões async
