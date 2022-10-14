@@ -12,8 +12,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      DATABASE_URI = ${{env.DATABASE_URI}}
     strategy:
       fail-fast: false
       matrix:
@@ -39,3 +37,5 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
+      env: |
+          DATABASE_URI = ${{secrets.DATABASE_URI}}
