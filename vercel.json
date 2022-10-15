@@ -1,11 +1,6 @@
 {
     "builds": [{ "src": "main.py", "use": "@vercel/python" }],
     "routes": [
-        { "src": "/", "dest": "main.py" },
-        { "src": "/user", "dest": "controllers/user_routes.py" },
-        { "src": "/products", "dest": "controllers/product_routes.py"},
-        { "src": "/cart", "dest": "controllers/cart_routes.py"},
-        { "src": "/user/{user_id}/address", "dest": "controllers/address_routes.py"},
-        { "src": "/cart/{cart_id}/item", "dest": "controllers/cart_items_routes.py"}
+        { "src": "/(.*)", "dest": "main.py" }
     ]
 }
