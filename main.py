@@ -12,6 +12,11 @@ from project_logs.logging import set_logging
 from server.database import DataBase
 
 app = FastAPI()
+app.include_router(user_router, tags=["user"], prefix="/user")
+app.include_router(product_router, tags=["products"], prefix="/products")
+app.include_router(address_router, tags=["address"], prefix="/user/{user_id}/address")
+app.include_router(cart_router, tags=["cart"], prefix="/cart")
+app.include_router(cart_items_router, tags=["cart_item"], prefix="/cart/{cart_id}/item")
 
 
 @app.on_event("startup")
@@ -40,10 +45,3 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         content=jsonable_encoder(project_errors),
     )
-
-
-app.include_router(user_router, tags=["user"], prefix="/user")
-app.include_router(product_router, tags=["products"], prefix="/products")
-app.include_router(address_router, tags=["address"], prefix="/user/{user_id}/address")
-app.include_router(cart_router, tags=["cart"], prefix="/cart")
-app.include_router(cart_items_router, tags=["cart_item"], prefix="/cart/{cart_id}/item")
