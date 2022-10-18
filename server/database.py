@@ -1,3 +1,4 @@
+from asyncio import get_event_loop
 from os import getenv
 
 from dotenv import load_dotenv
@@ -27,6 +28,7 @@ class DataBase:
             tls=True,
             tlsAllowInvalidCertificates=True,
         )
+        self.client.get_io_loop = get_event_loop
         self.users_collection = self.client.shopping_cart.users
         self.address_collection = self.client.shopping_cart.address
         self.product_collection = self.client.shopping_cart.products

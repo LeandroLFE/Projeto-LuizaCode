@@ -2,8 +2,12 @@ from typing import List, Union
 
 from fastapi import APIRouter, Body, HTTPException, Request, status
 
-from models.model_cart_item import (create_update_cart_item, delete_cart_item,
-                                    get_all_cart_items, get_cart_item)
+from models.model_cart_item import (
+    create_update_cart_item,
+    delete_cart_item,
+    get_all_cart_items,
+    get_cart_item,
+)
 from schemas.cart_item import CartItem, CartItemUpdate
 from schemas.project_errors import ProjectErrors
 

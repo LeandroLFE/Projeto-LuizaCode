@@ -2,9 +2,15 @@ from typing import List, Optional, Union
 
 from fastapi import APIRouter, Body, Request, status
 
-from models.model_user import (create_user, delete_user, get_emails_by_domain,
-                               get_user_by_id, get_users_by_name, list_users,
-                               update_user)
+from models.model_user import (
+    create_user,
+    delete_user,
+    get_emails_by_domain,
+    get_user_by_id,
+    get_users_by_name,
+    list_users,
+    update_user,
+)
 from schemas.project_errors import ProjectErrors
 from schemas.user import EmailsList, User, UserUpdate
 

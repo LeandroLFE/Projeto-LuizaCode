@@ -11,24 +11,24 @@ from controllers.user_routes import router as user_router
 from project_logs.logging import set_logging
 from server.database import DataBase
 
+
+async def startup_db_client():
+    app.database = DataBase()
+    await app.database.connect_db()
+
+
+async def shutdown_db_client():
+    await app.database.disconnect_db()
+
+
 app = FastAPI()
 app.include_router(user_router, tags=["user"], prefix="/user")
 app.include_router(product_router, tags=["products"], prefix="/products")
 app.include_router(address_router, tags=["address"], prefix="/user/{user_id}/address")
 app.include_router(cart_router, tags=["cart"], prefix="/cart")
 app.include_router(cart_items_router, tags=["cart_item"], prefix="/cart/{cart_id}/item")
-app.database = {}
-
-
-@app.on_event("startup")
-async def startup_db_client():
-    app.database = DataBase()
-    await app.database.connect_db()
-
-
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    await app.database.disconnect_db()
+app.add_event_handler("startup", startup_db_client)
+app.add_event_handler("shutdown", shutdown_db_client)
 
 
 @app.exception_handler(RequestValidationError)
