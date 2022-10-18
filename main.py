@@ -24,9 +24,7 @@ async def shutdown_db_client():
     await app.database.disconnect_db()
 
 
-app = FastAPI()
-app.add_event_handler("startup", startup_db_client)
-app.add_event_handler("shutdown", shutdown_db_client)
+app = FastAPI(on_startup=[startup_db_client], on_shutdown=[shutdown_db_client])
 app.include_router(user_router, tags=["user"], prefix="/user")
 app.include_router(product_router, tags=["products"], prefix="/products")
 app.include_router(address_router, tags=["address"], prefix="/user/{user_id}/address")
