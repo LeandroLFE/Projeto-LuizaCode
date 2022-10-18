@@ -17,6 +17,7 @@ app.include_router(product_router, tags=["products"], prefix="/products")
 app.include_router(address_router, tags=["address"], prefix="/user/{user_id}/address")
 app.include_router(cart_router, tags=["cart"], prefix="/cart")
 app.include_router(cart_items_router, tags=["cart_item"], prefix="/cart/{cart_id}/item")
+app.database = {}
 
 
 @app.on_event("startup")
