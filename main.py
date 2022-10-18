@@ -24,14 +24,13 @@ async def shutdown_db_client():
 
 
 app = FastAPI()
+app.add_event_handler("startup", startup_db_client)
+app.add_event_handler("shutdown", shutdown_db_client)
 app.include_router(user_router, tags=["user"], prefix="/user")
 app.include_router(product_router, tags=["products"], prefix="/products")
 app.include_router(address_router, tags=["address"], prefix="/user/{user_id}/address")
 app.include_router(cart_router, tags=["cart"], prefix="/cart")
 app.include_router(cart_items_router, tags=["cart_item"], prefix="/cart/{cart_id}/item")
-
-app.add_event_handler("startup", startup_db_client)
-app.add_event_handler("shutdown", shutdown_db_client)
 
 
 @app.exception_handler(RequestValidationError)

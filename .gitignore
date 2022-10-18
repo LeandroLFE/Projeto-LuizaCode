@@ -8,6 +8,7 @@ __pycache__/
 
 #deta
 .deta/
+deta.json
 
 # Distribution / packaging
 .Python
