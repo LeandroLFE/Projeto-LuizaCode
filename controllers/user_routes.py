@@ -13,6 +13,7 @@ from models.model_user import (
 )
 from schemas.project_errors import ProjectErrors
 from schemas.user import EmailsList, User, UserUpdate
+from server.database import DataBase
 
 router = APIRouter()
 
@@ -35,8 +36,13 @@ async def route_create_user(
     response_model=Union[List[User], ProjectErrors],
 )
 async def route_list_users(request: Request, page: Optional[int] = None):
-    return await list_users(request.app.database, page)
-
+    if hasattr(request.app, "database"):
+        return await list_users(request.app.database, page)
+    else:
+        database = DataBase()
+        await database.connect_db()
+        return await list_users(database, page)
+        
 
 @router.get(
     "/{user_id}",
