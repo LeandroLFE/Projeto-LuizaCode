@@ -14,6 +14,7 @@ from server.database import DataBase
 
 async def startup_db_client():
     global app
+    app.test = True
     app.database = DataBase()
     await app.database.connect_db()
 

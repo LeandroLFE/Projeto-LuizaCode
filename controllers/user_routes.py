@@ -30,19 +30,12 @@ async def route_create_user(
     return await create_user(request.app.database, user)
 
 
-@router.get(
-    "/",
-    response_description="List users",
-    response_model=Union[List[User], ProjectErrors],
-)
+@router.get("/", response_description="List users")
 async def route_list_users(request: Request, page: Optional[int] = None):
-    if hasattr(request.app, "database"):
-        return await list_users(request.app.database, page)
-    else:
-        database = DataBase()
-        await database.connect_db()
-        return await list_users(database, page)
-        
+    # return await list_users(request.app.database, page)
+    return {"Has_test": hasattr(request.app, "test"),
+            "Has_database": hasattr(request.app, "database")}
+
 
 @router.get(
     "/{user_id}",
