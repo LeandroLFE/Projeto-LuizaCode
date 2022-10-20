@@ -12,9 +12,13 @@
 &nbsp;
 ### fastapi[all] = Fastapi Python framework with it´s aditional modules: requests and uvicorn used in this project
 ### motor = Driver Python Async for MongoDB
+### python-dotenv = To read .env envinronment file for pytest
 
 &nbsp;
-## * To Format: Black Formatter extension recommended
+## * To Format: 
+### Black Formatter extension recommended
+### isort to organize imports
+### flake8 to lint
 &nbsp;
 
 
@@ -65,19 +69,13 @@ Open http://127.0.0.1:8000/docs or use the http_tests folder with the VSCode ext
 ```
 # &nbsp;
 # -> To use pytest:
-## Add pytest.ini file with almost the same .env content:
-```
-[pytest]
-env =
-    DATABASE_URI = <your_mongodb_atlas_connection_string>
-```
 ## Run Tests
 ```
-$ pytest -c pytest.ini
+$ pytest
 ```
 # &nbsp;
 # -> Coverage Report:
-## * Add a folder to store the coverage reports, i.e. tests\coverage
+## * You can add a folder to store the coverage reports, i.e. tests\coverage
 ## * You can edit .coveragerc file to configure what won´t be used in coverage
 ```
 [run]
@@ -85,7 +83,7 @@ omit = tests/*, main.py
 ```
 ## Run Tests with coverage report
 ```
-$ pytest -c pytest.ini --cov-config=.coveragerc --cov-report xml:tests\coverage\cov.xml --cov-report term --cov=. tests/
+$ pytest --cov-config=.coveragerc --cov-report xml:{your_coverage_location}\cov.xml --cov-report term --cov=. tests/
 ```
 * it will execute pytest, store the coverage report in cov.xml file, and show the result table in terminal
 * You can use the VSCode "Coverage Gutters" extension to show coverage in each python file in project
