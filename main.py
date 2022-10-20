@@ -46,3 +46,11 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         content=jsonable_encoder(project_errors),
     )
+
+
+@app.get("/")
+async def home(request: Request):
+    return {
+        "status": "OK",
+        "msg": "Welcome to LFE Shooping Cart LuizaCode",
+    }
