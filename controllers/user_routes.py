@@ -1,6 +1,6 @@
 from typing import List, Optional, Union
 
-from fastapi import APIRouter, Body, Request, status
+from fastapi import APIRouter, Body, Depends, Request, status
 
 from models.model_user import (
     create_user,
@@ -13,7 +13,7 @@ from models.model_user import (
 )
 from schemas.project_errors import ProjectErrors
 from schemas.user import EmailsList, User, UserUpdate
-from server.database import DataBase
+from server.database import get_db
 
 router = APIRouter()
 
@@ -25,16 +25,19 @@ router = APIRouter()
     response_model=Union[User, ProjectErrors],
 )
 async def route_create_user(
-    request: Request, status_code=status.HTTP_201_CREATED, user: User = Body(...)
+    request: Request,
+    status_code=status.HTTP_201_CREATED,
+    user: User = Body(...),
+    db: get_db = Depends(),
 ):
-    return await create_user(request.app.database, user)
+    return await create_user(db, user)
 
 
 @router.get("/", response_description="List users")
-async def route_list_users(request: Request, page: Optional[int] = None):
-    # return await list_users(request.app.database, page)
-    return {"Has_test": hasattr(request.app, "test"),
-            "Has_database": hasattr(request.app, "database")}
+async def route_list_users(
+    request: Request, page: Optional[int] = None, db: get_db = Depends()
+):
+    return await list_users(db, page)
 
 
 @router.get(
@@ -42,8 +45,8 @@ async def route_list_users(request: Request, page: Optional[int] = None):
     response_description="Return an User by Id",
     response_model=Union[User, ProjectErrors],
 )
-async def route_get_user_by_id(user_id: str, request: Request):
-    return await get_user_by_id(request.app.database, user_id)
+async def route_get_user_by_id(user_id: str, request: Request, db: get_db = Depends()):
+    return await get_user_by_id(db, user_id)
 
 
 @router.get(
@@ -51,8 +54,10 @@ async def route_get_user_by_id(user_id: str, request: Request):
     response_description="Return an User by name",
     response_model=Union[List[User], ProjectErrors],
 )
-async def route_get_users_by_name(user_name: str, request: Request):
-    return await get_users_by_name(request.app.database, user_name)
+async def route_get_users_by_name(
+    user_name: str, request: Request, db: get_db = Depends()
+):
+    return await get_users_by_name(db, user_name)
 
 
 @router.get(
@@ -60,19 +65,21 @@ async def route_get_users_by_name(user_name: str, request: Request):
     response_description="Return number of emails by domain name",
     response_model=Union[EmailsList, ProjectErrors],
 )
-async def route_get_emails_by_domain(domain_name: str, request: Request):
-    return await get_emails_by_domain(request.app.database, domain_name)
+async def route_get_emails_by_domain(
+    domain_name: str, request: Request, db: get_db = Depends()
+):
+    return await get_emails_by_domain(db, domain_name)
 
 
 @router.put(
     "/{user_id}", response_description="Update an User", response_model=ProjectErrors
 )
 async def route_update_user(
-    user_id: str, request: Request, user: UserUpdate = Body(...)
+    user_id: str, request: Request, user: UserUpdate = Body(...), db: get_db = Depends()
 ):
-    return await update_user(request.app.database, user_id, user)
+    return await update_user(db, user_id, user)
 
 
 @router.delete("/{user_id}", response_description="Delete an User")
-async def route_delete_user(user_id: str, request: Request):
-    return await delete_user(request.app.database, user_id)
+async def route_delete_user(user_id: str, request: Request, db: get_db = Depends()):
+    return await delete_user(db, user_id)

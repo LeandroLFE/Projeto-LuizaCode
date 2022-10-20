@@ -29,5 +29,5 @@ content-type: application/json
 ]
 
 ### Delete a product #####
-DELETE http://127.0.0.1:8000/products/860037ad-010e-44f1-8568-796f576d4545/ HTTP/1.1
+DELETE http://127.0.0.1:8000/products/e70069e5-5107-41f7-a660-cd9c67fa8cd9/ HTTP/1.1
 content-type: application/json

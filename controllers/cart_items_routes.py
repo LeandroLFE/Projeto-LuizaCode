@@ -1,6 +1,6 @@
 from typing import List, Union
 
-from fastapi import APIRouter, Body, HTTPException, Request, status
+from fastapi import APIRouter, Body, Depends, HTTPException, Request, status
 
 from models.model_cart_item import (
     create_update_cart_item,
@@ -10,6 +10,8 @@ from models.model_cart_item import (
 )
 from schemas.cart_item import CartItem, CartItemUpdate
 from schemas.project_errors import ProjectErrors
+from server.database import get_db
+
 
 router = APIRouter()
 
@@ -21,9 +23,12 @@ router = APIRouter()
     response_model=Union[CartItem, ProjectErrors],
 )
 async def route_create_update_cart_item(
-    cart_id: str, request: Request, cart_item: CartItemUpdate = Body(...)
+    cart_id: str,
+    request: Request,
+    cart_item: CartItemUpdate = Body(...),
+    db: get_db = Depends(),
 ):
-    return await create_update_cart_item(request.app.database, cart_id, cart_item)
+    return await create_update_cart_item(db, cart_id, cart_item)
 
 
 @router.get(
@@ -31,8 +36,12 @@ async def route_create_update_cart_item(
     response_description="Return all cart_items from a cart",
     response_model=Union[List[CartItem], ProjectErrors],
 )
-async def route_get_all_cart_items(cart_id: str, request: Request):
-    return await get_all_cart_items(request.app.database, cart_id)
+async def route_get_all_cart_items(
+    cart_id: str,
+    request: Request,
+    db: get_db = Depends(),
+):
+    return await get_all_cart_items(db, cart_id)
 
 
 @router.get(
@@ -40,9 +49,14 @@ async def route_get_all_cart_items(cart_id: str, request: Request):
     response_description="Return an active User cart_item",
     response_model=Union[CartItem, ProjectErrors],
 )
-async def route_get_a_cart_item(cart_id: str, product_id: str, request: Request):
+async def route_get_a_cart_item(
+    cart_id: str,
+    product_id: str,
+    request: Request,
+    db: get_db = Depends(),
+):
     if (
-        cart_item := await get_cart_item(request.app.database, cart_id, product_id)
+        cart_item := await get_cart_item(db, cart_id, product_id)
     ) is not None:
         return cart_item
 
@@ -61,9 +75,13 @@ async def route_get_a_cart_item(cart_id: str, product_id: str, request: Request)
     response_model=Union[CartItem, ProjectErrors],
 )
 async def route_delete_cart_item(
-    cart_id: str, product_id: str, request: Request, quantity: int = 1
+    cart_id: str,
+    product_id: str,
+    request: Request,
+    quantity: int = 1,
+    db: get_db = Depends(),
 ):
     quantity = 1 if not quantity else quantity
     quantity = 1 if not str(quantity).isdigit() else int(quantity)
     quantity = 1 if quantity < 1 else quantity
-    return await delete_cart_item(request.app.database, cart_id, product_id, quantity)
+    return await delete_cart_item(db, cart_id, product_id, quantity)

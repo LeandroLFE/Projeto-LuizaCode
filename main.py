@@ -9,22 +9,21 @@ from controllers.cart_routes import router as cart_router
 from controllers.product_routes import router as product_router
 from controllers.user_routes import router as user_router
 from project_logs.logging import set_logging
-from server.database import DataBase
 
 
 async def startup_db_client():
     global app
     app.test = True
-    app.database = DataBase()
-    await app.database.connect_db()
+    # app.database = DataBase()
+    # await app.database.connect_db()
 
 
 async def shutdown_db_client():
     global app
-    await app.database.disconnect_db()
+    # await app.database.disconnect_db()
 
 
-app = FastAPI(on_startup=[startup_db_client], on_shutdown=[shutdown_db_client])
+app = FastAPI()
 app.include_router(user_router, tags=["user"], prefix="/user")
 app.include_router(product_router, tags=["products"], prefix="/products")
 app.include_router(address_router, tags=["address"], prefix="/user/{user_id}/address")
@@ -47,9 +46,3 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         content=jsonable_encoder(project_errors),
     )
-
-
-@app.get("/")
-async def home_page(request: Request):
-    return {"Has_test": hasattr(request.app, "test"),
-            "Has_database": hasattr(request.app, "database")}

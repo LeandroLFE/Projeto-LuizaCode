@@ -1,12 +1,17 @@
 from typing import List, Union
 
-from fastapi import APIRouter, Body, Request, status
+from fastapi import APIRouter, Body, Depends, Request, status
 
-from models.model_product import (create_products, delete_product,
-                                  list_product_by_id, list_products,
-                                  update_product)
+from models.model_product import (
+    create_products,
+    delete_product,
+    list_product_by_id,
+    list_products,
+    update_product,
+)
 from schemas.product import Product, ProductUpdate
 from schemas.project_errors import ProjectErrors
+from server.database import get_db
 
 router = APIRouter()
 
@@ -18,14 +23,16 @@ router = APIRouter()
     response_model=Union[List[Product], Product],
 )
 async def route_create_products(
-    request: Request, products: Union[List[Product], Product] = Body(...)
+    request: Request,
+    products: Union[List[Product], Product] = Body(...),
+    db: get_db = Depends()
 ):
-    return await create_products(request.app.database, products)
+    return await create_products(db, products)
 
 
 @router.get("/", response_description="List all Products", response_model=List[Product])
-async def route_list_products(request: Request):
-    return await list_products(request.app.database)
+async def route_list_products(request: Request, db: get_db = Depends()):
+    return await list_products(db)
 
 
 @router.get(
@@ -33,8 +40,10 @@ async def route_list_products(request: Request):
     response_description="Return a Product by Id",
     response_model=Product,
 )
-async def route_list_product_by_id(product_id: str, request: Request):
-    return await list_product_by_id(request.app.database, product_id)
+async def route_list_product_by_id(
+    product_id: str, request: Request, db: get_db = Depends()
+):
+    return await list_product_by_id(db, product_id)
 
 
 @router.put(
@@ -43,11 +52,16 @@ async def route_list_product_by_id(product_id: str, request: Request):
     response_model=Union[Product, ProjectErrors],
 )
 async def route_update_product(
-    product_id: str, request: Request, product: ProductUpdate = Body(...)
+    product_id: str,
+    request: Request,
+    product: ProductUpdate = Body(...),
+    db: get_db = Depends(),
 ):
-    return await update_product(request.app.database, product_id, product)
+    return await update_product(db, product_id, product)
 
 
 @router.delete("/{product_id}", response_description="Delete a product")
-async def route_delete_product(product_id: str, request: Request):
-    return await delete_product(request.app.database, product_id)
+async def route_delete_product(
+    product_id: str, request: Request, db: get_db = Depends()
+):
+    return await delete_product(db, product_id)

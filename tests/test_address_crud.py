@@ -4,23 +4,20 @@ from pytest import mark
 
 from controllers.address_routes import router as address_router
 from controllers.user_routes import router as client_router
-from server.database_test import DataBaseTest
+from server.database import get_db
+from server.database_test import drop_databases_to_test, get_db as get_test_db
 from utils.generate_fakes import generate_fake_user
 
 app = FastAPI()
 app.include_router(client_router, tags=["user"], prefix="/user")
 app.include_router(address_router, tags=["address"], prefix="/user/{user_id}/address")
 
-
-@app.on_event("startup")
-async def startup_db_client():
-    app.database = DataBaseTest()
-    await app.database.connect_db()
+app.dependency_overrides[get_db] = get_test_db
 
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
-    await app.database.disconnect_db()
+    await drop_databases_to_test()
 
 
 @mark.asyncio

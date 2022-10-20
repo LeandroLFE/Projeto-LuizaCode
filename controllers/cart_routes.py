@@ -1,11 +1,11 @@
 from typing import Union
 
-from fastapi import APIRouter, Body, HTTPException, Request, status
+from fastapi import APIRouter, Body, Depends, HTTPException, Request, status
 
-from models.model_cart import (create_cart, delete_cart, get_user_cart,
-                               update_cart)
+from models.model_cart import create_cart, delete_cart, get_user_cart, update_cart
 from schemas.cart import Cart, CartInsert, CartUpdate
 from schemas.project_errors import ProjectErrors
+from server.database import get_db
 
 router = APIRouter()
 
@@ -17,9 +17,12 @@ router = APIRouter()
     response_model=Union[Cart, ProjectErrors],
 )
 async def route_create_cart(
-    user_id: str, request: Request, cart: CartInsert = Body(...)
+    user_id: str,
+    request: Request,
+    cart: CartInsert = Body(...),
+    db: get_db = Depends(),
 ):
-    return await create_cart(request.app.database, user_id, cart)
+    return await create_cart(db, user_id, cart)
 
 
 @router.get(
@@ -27,8 +30,12 @@ async def route_create_cart(
     response_description="Return an active User cart",
     response_model=Union[Cart, ProjectErrors],
 )
-async def route_get_user_cart(user_id: str, request: Request):
-    if (get_cart := await get_user_cart(request.app.database, user_id)) is not None:
+async def route_get_user_cart(
+    user_id: str,
+    request: Request,
+    db: get_db = Depends(),
+):
+    if (get_cart := await get_user_cart(db, user_id)) is not None:
         return get_cart
 
     raise HTTPException(
@@ -46,11 +53,12 @@ async def route_get_user_cart(user_id: str, request: Request):
     response_model=Union[Cart, ProjectErrors],
 )
 async def route_update_cart(
-    user_id: str, request: Request, cart: CartUpdate = Body(...)
+    user_id: str,
+    request: Request,
+    cart: CartUpdate = Body(...),
+    db: get_db = Depends(),
 ):
-    if (
-        cart_update := await update_cart(request.app.database, user_id, cart)
-    ) is not None:
+    if (cart_update := await update_cart(db, user_id, cart)) is not None:
         return cart_update
 
     raise HTTPException(
@@ -63,5 +71,9 @@ async def route_update_cart(
 
 
 @router.delete("/{user_id}", response_description="Delete the user cart")
-async def route_delete_cart(user_id: str, request: Request):
-    return await delete_cart(request.app.database, user_id)
+async def route_delete_cart(
+    user_id: str,
+    request: Request,
+    db: get_db = Depends(),
+):
+    return await delete_cart(db, user_id)

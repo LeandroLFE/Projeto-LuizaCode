@@ -19,7 +19,7 @@ class DataBase:
         load_dotenv()
         self.database_uri = getenv("DATABASE_URI")
 
-    async def connect_db(self):
+    def connect_db(self):
         # conexao mongo, com no máximo 10 conexões async
         self.client = AsyncIOMotorClient(
             self.database_uri,
@@ -35,5 +35,22 @@ class DataBase:
         self.cart_collection = self.client.shopping_cart.cart
         self.cart_items_collection = self.client.shopping_cart.cart_items
 
-    async def disconnect_db(self):
+    def disconnect_db(self):
         self.client.close()
+
+
+class ContextDb:
+    def __init__(self):
+        self.db = DataBase()
+        self.db.connect_db()
+
+    def __enter__(self):
+        return self.db
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.db.client.close()
+
+
+async def get_db():
+    with ContextDb() as db:
+        yield db
